@@ -454,5 +454,7 @@ def init_db():
 
 
 if __name__ == '__main__':
-    init_db()
-    app.run(debug=True, host='127.0.0.1', port=5000)
+    with app.app_context():
+        db.create_all()  # Автоматическое создание всех таблиц при старте
+    app.run(debug=True)
+
