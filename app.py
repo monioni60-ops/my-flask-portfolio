@@ -35,6 +35,11 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'onni-monni-secret-key-change-me')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'onni.db')
+# Принудительное создание таблиц базы данных при старте сервера в облаке
+with app.app_context():
+    import sqlalchemy as sa
+    db.create_all()
+
 # Автоматическое создание папки для загрузок картинок
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
