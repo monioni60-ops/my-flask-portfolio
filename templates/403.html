@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Доступ запрещён — ONNI_MONNI{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="eyebrow">Ошибка 403</div>
+  <h1>Доступ <em>запрещён</em></h1>
+  <p>Эта страница доступна только администратору сайта.</p>
+  <div class="contact-strip">
+    <a class="contact-chip tg" href="{{ url_for('index') }}">На главную</a>
+  </div>
+</section>
+{% endblock %}

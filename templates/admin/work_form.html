@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Редактировать работу' if work else 'Новая работа' }} — ONNI_MONNI{% endblock %}
+{% block content %}
+<section class="auth-page">
+  <div class="auth-card" style="max-width:560px;">
+    <h1>{{ 'Редактировать работу' if work else 'Добавить работу' }}</h1>
+    <p class="sub">{{ 'Измените данные и сохраните.' if work else 'Загрузите фото и заполните описание.' }}</p>
+
+    <form method="post" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="title">Название</label>
+        <input type="text" id="title" name="title" value="{{ work.title if work else '' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label for="category">Категория</label>
+        <select id="category" name="category">
+          <option value="digital" {{ 'selected' if work and work.category=='digital' }}>Цифровой арт</option>
+          <option value="traditional" {{ 'selected' if work and work.category=='traditional' }}>Традиционный арт</option>
+          <option value="photo" {{ 'selected' if work and work.category=='photo' }}>Фото</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Описание</label>
+        <textarea id="description" name="description" rows="4">{{ work.description if work else '' }}</textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="image_file">Загрузить фото с компьютера</label>
+        <input type="file" id="image_file" name="image_file" accept="image/png,image/jpeg,image/gif,image/webp">
+      </div>
+
+      <div class="form-group">
+        <label for="image_url">...или вставьте ссылку на изображение</label>
+        <input type="url" id="image_url" name="image_url" placeholder="https://..." value="{{ work.image_url if work and work.image_url.startswith('http') else '' }}">
+      </div>
+
+      {% if work %}
+      <p class="sub" style="text-align:left; margin-bottom:14px;">Текущее фото сохранится, если не выбрать новое.</p>
+      <img src="{{ work.image_src }}" alt="" style="width:100%; border-radius:12px; margin-bottom:18px;">
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary btn-block">{{ 'Сохранить изменения' if work else 'Добавить работу' }}</button>
+    </form>
+    <div class="auth-switch"><a href="{{ url_for('admin_dashboard') }}">← Назад в админ-панель</a></div>
+  </div>
+</section>
+{% endblock %}

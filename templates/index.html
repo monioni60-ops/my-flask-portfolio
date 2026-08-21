@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="eyebrow">Артист · Иллюстратор</div>
+  <h1>Между <em>пикселем</em><br>и мазком кисти</h1>
+  <p>Привет, я ONNI_MONNI — рисую там, где холст встречается с экраном. Ниже — часть моих работ: от цифровых иллюстраций до традиционной живописи и живых моментов из жизни.</p>
+  <div class="contact-strip">
+    <a class="contact-chip tg" href="https://t.me/ON1_MON1" target="_blank" rel="noopener">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 3.5 2.7 11.1c-1.3.5-1.3 1.2-.2 1.5l4.9 1.5 1.9 5.8c.2.6.4.8.9.8.5 0 .7-.2 1-.5l2.4-2.3 5 3.6c.9.5 1.5.2 1.8-.9l3.2-15c.4-1.4-.5-2-1.7-1.6Zm-4.2 3.6L8.9 13.6l-.3 3.2-1.5-4.6 10.6-5.1Z"/></svg></span>
+      Написать в Telegram
+    </a>
+    <a class="contact-chip mail" href="mailto:monioni60@gmail.com">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+      Написать на почту
+    </a>
+  </div>
+</section>
+
+<!-- ================= FILTER + GALLERY ================= -->
+<section class="filter-section">
+  <div class="section-heading">
+    <h2>Портфолио</h2>
+    <p>Выбери категорию, чтобы увидеть нужные работы</p>
+  </div>
+
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn {{ 'active' if active_filter == 'all' }}" data-href="{{ url_for('index', cat='all') }}">Общее</button>
+    <button class="filter-btn {{ 'active' if active_filter == 'art' }}" data-href="{{ url_for('index', cat='art') }}">Арты</button>
+    <button class="filter-btn {{ 'active' if active_filter == 'photo' }}" data-href="{{ url_for('index', cat='photo') }}">Фото</button>
+    <button class="filter-btn {{ 'active' if active_filter == 'traditional' }}" data-href="{{ url_for('index', cat='traditional') }}">Традиционные арты</button>
+    <button class="filter-btn {{ 'active' if active_filter == 'digital' }}" data-href="{{ url_for('index', cat='digital') }}">Цифровые арты</button>
+  </div>
+</section>
+
+<section class="gallery-wrap">
+  <div class="grid" id="grid">
+    {% for work in works %}
+    <a class="card" href="{{ url_for('work_detail', work_id=work.id) }}">
+      <div class="card-media">
+        <img src="{{ work.image_src }}" alt="{{ work.title }}" loading="lazy"
+             onerror="this.parentElement.style.background='linear-gradient(135deg, var(--accent-soft), var(--bg-alt))'; this.style.display='none';">
+        <div class="card-overlay">
+          <div class="card-tag">{{ work.category_label }}</div>
+          <div class="card-title">{{ work.title }}</div>
+          <div class="card-meta">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              {{ work.views }}
+            </span>
+            <span>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-6.7-4.35-9.3-8.1C.8 10.1 1.4 6.6 4.3 5c2.2-1.2 4.7-.6 6 1.2l1.7 2.1 1.7-2.1c1.3-1.8 3.8-2.4 6-1.2 2.9 1.6 3.5 5.1 1.6 7.9C18.7 16.65 12 21 12 21Z"/></svg>
+              {{ work.like_count }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </a>
+    {% else %}
+    <p class="empty-note">Пока нет работ в этой категории.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ================= SOCIAL ================= -->
+<section class="social-section">
+  <div class="section-heading">
+    <h2>Мои соцсети</h2>
+    <p>Заходи в гости — там больше процессов, бэкстейджей и интересные события)))</p>
+  </div>
+
+  <div class="social-grid">
+    <a class="social-card telegram" href="https://t.me/moon_land2" target="_blank" rel="noopener">
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 3.5 2.7 11.1c-1.3.5-1.3 1.2-.2 1.5l4.9 1.5 1.9 5.8c.2.6.4.8.9.8.5 0 .7-.2 1-.5l2.4-2.3 5 3.6c.9.5 1.5.2 1.8-.9l3.2-15c.4-1.4-.5-2-1.7-1.6Zm-4.2 3.6L8.9 13.6l-.3 3.2-1.5-4.6 10.6-5.1Z"/></svg>
+      </div>
+      <div class="social-body">
+        <div class="social-name">Telegram-канал</div>
+        <div class="social-status">Бэкстейджи(иногда), мысли и процесс работы</div>
+        <div class="social-cta">Открыть канал <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </div>
+    </a>
+
+    <a class="social-card youtube" href="#" target="_blank" rel="noopener">
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 15.2 15.5 12 10 8.8v6.4Z"/><path d="M22 12s0-3.2-.4-4.7a3 3 0 0 0-2.1-2.1C17.9 4.7 12 4.7 12 4.7s-5.9 0-7.5.5A3 3 0 0 0 2.4 7.3C2 8.8 2 12 2 12s0 3.2.4 4.7a3 3 0 0 0 2.1 2.1c1.6.5 7.5.5 7.5.5s5.9 0 7.5-.5a3 3 0 0 0 2.1-2.1C22 15.2 22 12 22 12Z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      </div>
+      <div class="social-body">
+        <div class="social-name">YouTube</div>
+        <div class="social-status">Его покачто нету(((</div>
+        <div class="social-cta">Смотреть видео <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </div>
+    </a>
+
+    <a class="social-card tiktok" href="https://www.tiktok.com/@moon_land8" target="_blank" rel="noopener">
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 2h-3.2v13.4a2.9 2.9 0 1 1-2.1-2.8V9.3a6 6 0 1 0 5.3 6V9.7a7.7 7.7 0 0 0 4.4 1.4V8a4.5 4.5 0 0 1-4.4-4.4V2Z"/></svg>
+      </div>
+      <div class="social-body">
+        <div class="social-name">TikTok</div>
+        <div class="social-status">Мои работы и весь актив</div>
+        <div class="social-cta">Следить <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </div>
+    </a>
+
+    <a class="social-card steam" href="https://steamcommunity.com/profiles/76561199873787515/" target="_blank" rel="noopener">
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.03 4.524 4.524a4.524 4.524 0 0 1-4.524 4.524h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L1.442 15.5C2.977 20.335 7.492 24 11.979 24c6.628 0 11.978-5.375 11.978-12S18.607 0 11.979 0zM7.54 18.21l-1.473-.61c.262.539.714.987 1.314 1.238 1.297.539 2.793-.076 3.334-1.375.263-.63.264-1.325.005-1.958a2.685 2.685 0 0 0-1.377-1.377c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.457 1.017zm11.415-9.303a3.017 3.017 0 0 1-3.013 3.013 3.016 3.016 0 0 1-3.013-3.013 3.015 3.015 0 0 1 3.013-3.013 3.016 3.016 0 0 1 3.013 3.013zm-5.275-.006c0 1.252 1.013 2.267 2.265 2.267 1.249 0 2.264-1.015 2.264-2.267 0-1.251-1.015-2.264-2.264-2.264-1.252 0-2.265 1.013-2.265 2.264z"/></svg>
+      </div>
+      <div class="social-body">
+        <div class="social-name">Steam</div>
+        <div class="social-status">Захажу туда когда скучно)))</div>
+        <div class="social-cta">Следить <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </div>
+    </a>
+
+    <button class="social-card copycard" id="copyCard" type="button">
+      <div class="copy-check" id="copyCheck">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        Скопировано!
+      </div>
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.522 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.419-2.1569 2.419zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419Z"/></svg>
+      </div>
+      <div class="social-body">
+        <div class="social-name">Discord</div>
+        <div class="social-status">ONNI_MONNI — нажми, чтобы скопировать</div>
+        <div class="social-cta">Копировать ник <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </div>
+    </button>
+
+    <a class="social-card mailcard" href="mailto:monioni60@gmail.com">
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+      </div>
+      <div class="social-body">
+        <div class="social-name">Email</div>
+        <div class="social-status">monioni60@gmail.com — по вопросам заказов и сотрудничества</div>
+        <div class="social-cta">Написать письмо <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </div>
+    </a>
+  </div>
+
+  <div class="social-extra-row">
+    <div class="qr-wrap">
+      <button class="pill-btn" id="qrBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM19 14h2M14 19h2M19 19h2"/></svg>
+        Показать QR-код
+      </button>
+      <div class="qr-popover" id="qrPopover">
+        <img src="https://i.postimg.cc/26Rv0jkC/image-2026-07-08-16-47-37.png" alt="QR Code" style="width:100%; height:auto; border-radius:8px;">
+        <p>Наведи камеру, чтобы перейти в Telegram</p>
+      </div>
+    </div>
+
+    <button class="pill-btn primary" id="shareBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-3.9M8.6 13.5l6.8 3.9"/></svg>
+      Поделиться сайтом
+    </button>
+  </div>
+</section>
+
+{% endblock %}
