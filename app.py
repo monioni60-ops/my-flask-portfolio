@@ -457,9 +457,15 @@ def init_db():
             print(f"[i] Загружено {len(SEED_WORKS)} демо-работ из старого сайта.")
 
 
-# Этот блок принудительно создаст таблицы на сервере Render
 with app.app_context():
     db.create_all()
+    # Принудительное обновление пароля администратора в базе данных
+    admin_user = User.query.filter_by(username='admin').first()
+    if admin_user:
+        from werkzeug.security import generate_password_hash
+        admin_user.password_hash = generate_password_hash('onni_monni_2011')
+        db.session.commit()
+
 
 if __name__ == '__main__':
     app.run(debug=True)
