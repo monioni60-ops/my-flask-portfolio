@@ -54,7 +54,7 @@ login_manager.login_message_category = 'error'
 # ВАЖНО: смените пароль после первого входа! См. инструкцию в README.
 DEFAULT_ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
 DEFAULT_ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'monioni60@gmail.com')
-DEFAULT_ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')
+DEFAULT_ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'onni_monni_2011')
 
 CATEGORY_LABELS = {
     'digital': 'Цифровой арт',
