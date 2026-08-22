@@ -13,12 +13,15 @@
       </div>
 
       <div class="form-group">
-        <label for="category">Категория</label>
+        <label for="category">Вкладка / категория</label>
         <select id="category" name="category">
-          <option value="digital" {{ 'selected' if work and work.category=='digital' }}>Цифровой арт</option>
-          <option value="traditional" {{ 'selected' if work and work.category=='traditional' }}>Традиционный арт</option>
-          <option value="photo" {{ 'selected' if work and work.category=='photo' }}>Фото</option>
+          {% for tag in tags %}
+          <option value="{{ tag.slug }}" {{ 'selected' if work and work.category == tag.slug }}>{{ tag.name }}</option>
+          {% else %}
+          <option value="digital">Цифровой арт</option>
+          {% endfor %}
         </select>
+        <p class="sub" style="text-align:left; margin-top:8px;">Нет нужной вкладки? Создайте её в <a href="{{ url_for('admin_dashboard') }}#tags">админ-панели → Вкладки</a>.</p>
       </div>
 
       <div class="form-group">

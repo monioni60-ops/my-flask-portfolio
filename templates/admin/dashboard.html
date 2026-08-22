@@ -16,6 +16,36 @@
       <div class="stat-card"><div class="num">{{ stats.views }}</div><div class="label">Просмотров</div></div>
     </div>
 
+    <!-- ===== ЖИВОЙ СТАТУС ===== -->
+    <h2 class="section-title" id="status">🟢 Живой статус в шапке сайта</h2>
+    <form method="post" action="{{ url_for('admin_update_status') }}" class="tag-add-form">
+      <input type="text" name="status_text" maxlength="200" value="{{ site_status.text }}" placeholder="Например: ✍️ Рисую новый арт, выложу через 2 часа">
+      <button type="submit" class="btn btn-primary">Обновить статус</button>
+    </form>
+
+    <!-- ===== ВКЛАДКИ ===== -->
+    <h2 class="section-title" id="tags">🏷️ Управление вкладками</h2>
+    <div class="tag-manager">
+      {% for tag in tags %}
+      <div class="tag-chip">
+        {{ tag.name }}
+        <form method="post" action="{{ url_for('admin_delete_tag', tag_id=tag.id) }}"
+              onsubmit="return confirm('Удалить вкладку «{{ tag.name }}»? Работы с этой категорией останутся на сайте.');">
+          <button type="submit" class="tag-del" title="Удалить вкладку">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+        </form>
+      </div>
+      {% else %}
+      <p class="empty-note">Вкладок пока нет.</p>
+      {% endfor %}
+    </div>
+    <form method="post" action="{{ url_for('admin_new_tag') }}" class="tag-add-form">
+      <input type="text" name="name" placeholder="Название новой вкладки" maxlength="80" required>
+      <button type="submit" class="btn btn-primary">Создать вкладку</button>
+    </form>
+
+    <!-- ===== РАБОТЫ ===== -->
     <h2 class="section-title">Работы</h2>
     <div class="admin-table-wrap">
       <table class="admin-table">
@@ -51,6 +81,67 @@
       </table>
     </div>
 
+    <!-- ===== ПОДДЕРЖКА (СОП) ===== -->
+    <h2 class="section-title" id="support">📥 Сообщения от поддержки</h2>
+    <p class="sub" style="margin:-10px 0 16px;">Поставьте галочку «Одобрить», чтобы пользователь получил уведомление «Ваш отзыв был одобрен».</p>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Пользователь</th><th>Сообщение</th><th>Статус</th><th>Дата</th><th>Действия</th></tr></thead>
+        <tbody>
+          {% for m in pending_support %}
+          <tr>
+            <td>{{ m.user.username }}</td>
+            <td>{{ m.text[:140] }}{% if m.text|length > 140 %}…{% endif %}</td>
+            <td><span class="status-pill pending">Ожидает</span></td>
+            <td>{{ m.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+            <td>
+              <div class="row-actions">
+                <form method="post" action="{{ url_for('admin_approve_support', message_id=m.id) }}">
+                  <button type="submit" class="btn btn-sm btn-primary">✓ Одобрить</button>
+                </form>
+                <form method="post" action="{{ url_for('admin_delete_support', message_id=m.id) }}">
+                  <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5">Новых обращений нет.</td></tr>
+          {% endfor %}
+          {% for m in approved_support %}
+          <tr>
+            <td>{{ m.user.username }}</td>
+            <td>{{ m.text[:140] }}{% if m.text|length > 140 %}…{% endif %}</td>
+            <td><span class="status-pill approved">Одобрено</span></td>
+            <td>{{ m.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+            <td>
+              <form method="post" action="{{ url_for('admin_delete_support', message_id=m.id) }}">
+                <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ===== ЧАТЫ (СОЛ) ===== -->
+    <h2 class="section-title" id="chats">💬 Личные чаты с пользователями</h2>
+    {% for c in chats %}
+    <a class="chat-list-item" href="{{ url_for('admin_chat', user_id=c.user.id) }}" style="text-decoration:none; color:inherit;">
+      <div class="avatar">{{ c.user.username[0]|upper }}</div>
+      <div>
+        <div class="name">{{ c.user.username }}</div>
+        {% if c.last %}
+        <div class="preview">{{ 'Вы: ' if c.last.sender_is_admin }}{{ c.last.text or '📎 Изображение' }}</div>
+        {% endif %}
+      </div>
+    </a>
+    {% else %}
+    <p class="empty-note">Пока никто не писал в чат.</p>
+    {% endfor %}
+
+    <!-- ===== КОММЕНТАРИИ ===== -->
     <h2 class="section-title">Последние комментарии</h2>
     <div class="admin-table-wrap">
       <table class="admin-table">

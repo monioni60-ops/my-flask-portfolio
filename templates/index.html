@@ -5,7 +5,7 @@
 <section class="hero">
   <div class="eyebrow">Артист · Иллюстратор</div>
   <h1>Между <em>пикселем</em><br>и мазком кисти</h1>
-  <p>Привет, я ONNI_MONNI — рисую там, где холст встречается с экраном. Ниже — часть моих работ: от цифровых иллюстраций до традиционной живописи и живых моментов из жизни.</p>
+  <p>Привет, я ONNI_MONNI — рисую там, где холст встречается с экраном. Ниже — часть моих работ: от цифровых иллюстраций до традиционной живописи и живых моментов из жизни. Кликни на любую карточку — она откроется на весь экран.</p>
   <div class="contact-strip">
     <a class="contact-chip tg" href="https://t.me/ON1_MON1" target="_blank" rel="noopener">
       <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 3.5 2.7 11.1c-1.3.5-1.3 1.2-.2 1.5l4.9 1.5 1.9 5.8c.2.6.4.8.9.8.5 0 .7-.2 1-.5l2.4-2.3 5 3.6c.9.5 1.5.2 1.8-.9l3.2-15c.4-1.4-.5-2-1.7-1.6Zm-4.2 3.6L8.9 13.6l-.3 3.2-1.5-4.6 10.6-5.1Z"/></svg></span>
@@ -22,25 +22,28 @@
 <section class="filter-section">
   <div class="section-heading">
     <h2>Портфолио</h2>
-    <p>Выбери категорию, чтобы увидеть нужные работы</p>
+    <p>Выбери вкладку, чтобы увидеть нужные работы</p>
   </div>
 
   <div class="filter-bar" id="filterBar">
-    <button class="filter-btn {{ 'active' if active_filter == 'all' }}" data-href="{{ url_for('index', cat='all') }}">Общее</button>
-    <button class="filter-btn {{ 'active' if active_filter == 'art' }}" data-href="{{ url_for('index', cat='art') }}">Арты</button>
-    <button class="filter-btn {{ 'active' if active_filter == 'photo' }}" data-href="{{ url_for('index', cat='photo') }}">Фото</button>
-    <button class="filter-btn {{ 'active' if active_filter == 'traditional' }}" data-href="{{ url_for('index', cat='traditional') }}">Традиционные арты</button>
-    <button class="filter-btn {{ 'active' if active_filter == 'digital' }}" data-href="{{ url_for('index', cat='digital') }}">Цифровые арты</button>
+    <button class="filter-btn {{ 'active' if active_filter == 'all' }}" data-href="{{ url_for('index', cat='all') }}">Все</button>
+    {% for tag in all_tags %}
+    <button class="filter-btn {{ 'active' if active_filter == tag.slug }}" data-href="{{ url_for('index', cat=tag.slug) }}">{{ tag.name }}</button>
+    {% endfor %}
   </div>
 </section>
 
 <section class="gallery-wrap">
   <div class="grid" id="grid">
     {% for work in works %}
-    <a class="card" href="{{ url_for('work_detail', work_id=work.id) }}">
+    <a class="card" href="{{ url_for('work_detail', work_id=work.id) }}" data-work-id="{{ work.id }}">
       <div class="card-media">
+        <div class="card-like-pill {{ 'liked' if work.is_liked_by(current_user) }}">
+          <svg viewBox="0 0 24 24" fill="{{ 'currentColor' if work.is_liked_by(current_user) else 'none' }}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.7-4.35-9.3-8.1C.8 10.1 1.4 6.6 4.3 5c2.2-1.2 4.7-.6 6 1.2l1.7 2.1 1.7-2.1c1.3-1.8 3.8-2.4 6-1.2 2.9 1.6 3.5 5.1 1.6 7.9C18.7 16.65 12 21 12 21Z"/></svg>
+          {{ work.like_count }}
+        </div>
         <img src="{{ work.image_src }}" alt="{{ work.title }}" loading="lazy"
-             onerror="this.parentElement.style.background='linear-gradient(135deg, var(--accent-soft), var(--bg-alt))'; this.style.display='none';">
+             onerror="this.parentElement.style.background='linear-gradient(135deg, rgba(124,108,255,.16), var(--bg-alt))'; this.style.display='none';">
         <div class="card-overlay">
           <div class="card-tag">{{ work.category_label }}</div>
           <div class="card-title">{{ work.title }}</div>
@@ -50,8 +53,8 @@
               {{ work.views }}
             </span>
             <span>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-6.7-4.35-9.3-8.1C.8 10.1 1.4 6.6 4.3 5c2.2-1.2 4.7-.6 6 1.2l1.7 2.1 1.7-2.1c1.3-1.8 3.8-2.4 6-1.2 2.9 1.6 3.5 5.1 1.6 7.9C18.7 16.65 12 21 12 21Z"/></svg>
-              {{ work.like_count }}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              {{ work.comment_count }}
             </span>
           </div>
         </div>

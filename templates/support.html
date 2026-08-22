@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Поддержка — ONNI_MONNI{% endblock %}
+{% block content %}
+<section class="list-page">
+  <h1>Поддержка</h1>
+  <p class="sub">Напишите об ошибке на сайте, задайте вопрос или оставьте отзыв — я отвечу лично.</p>
+
+  <form method="post" class="comment-form" style="margin-bottom:36px;">
+    <textarea name="text" placeholder="Опишите вопрос, баг или отзыв..." maxlength="2000" required style="min-height:120px;"></textarea>
+    <button type="submit" class="btn btn-primary" style="align-self:flex-end;">Отправить обращение</button>
+  </form>
+
+  <h2 class="section-title" style="margin-top:0;">Мои обращения</h2>
+  {% for m in my_messages %}
+  <div class="support-item">
+    <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; margin-bottom:8px;">
+      <span class="status-pill {{ 'approved' if m.status == 'approved' else 'pending' }}">
+        {{ 'Одобрено' if m.status == 'approved' else 'Ожидает рассмотрения' }}
+      </span>
+      <span class="comment-date">{{ m.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+    </div>
+    <div class="comment-text">{{ m.text }}</div>
+  </div>
+  {% else %}
+  <p class="empty-note">Вы ещё не отправляли обращений.</p>
+  {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}Чат с {{ other_name }} — ONNI_MONNI{% endblock %}
+{% block content %}
+<section class="chat-page">
+  <div class="chat-head">
+    {% if is_admin_view %}
+    <a class="back-link" href="{{ url_for('admin_dashboard') }}#chats" style="margin:0 10px 0 0;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </a>
+    {% endif %}
+    <div class="avatar">{{ other_name[0]|upper }}</div>
+    <h1>{{ other_name }}</h1>
+  </div>
+
+  <div class="chat-window" id="chatWindow">
+    {% for m in messages %}
+    <div class="chat-bubble {{ 'mine' if (m.sender_is_admin == (is_admin_view|default(false))) else 'theirs' }}" data-id="{{ m.id }}">
+      {% if m.text %}{{ m.text }}{% endif %}
+      {% if m.image_filename %}
+      <img src="{{ url_for('static', filename='uploads/' + m.image_filename) }}" alt="Изображение в чате">
+      {% endif %}
+      <div class="chat-time">{{ m.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+    </div>
+    {% else %}
+    <div class="chat-empty">Сообщений пока нет. Напишите первым :)</div>
+    {% endfor %}
+  </div>
+
+  <form class="chat-form" method="post" action="{{ send_url }}" enctype="multipart/form-data">
+    <label class="chat-attach" title="Прикрепить изображение">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      <input type="file" name="image" accept="image/png,image/jpeg,image/gif,image/webp">
+    </label>
+    <input type="text" name="text" placeholder="Напишите сообщение..." maxlength="1000">
+    <button type="submit" class="chat-send" aria-label="Отправить">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 3 18 9-18 9V13l14-1L3 11V3Z"/></svg>
+    </button>
+  </form>
+</section>
+{% block scripts %}
+<script>
+(function () {
+  var win = document.getElementById('chatWindow');
+  if (win) { win.scrollTop = win.scrollHeight; }
+  if (!win) return;
+
+  var isAdminView = {{ 'true' if is_admin_view else 'false' }};
+  var targetUserId = {{ target_user.id if is_admin_view else 'null' }};
+  var pollUrl = isAdminView
+    ? '/admin/api/chat/' + targetUserId + '/messages'
+    : '/api/chat/messages';
+
+  function getLastId() {
+    var bubbles = win.querySelectorAll('.chat-bubble[data-id]');
+    if (!bubbles.length) return 0;
+    return parseInt(bubbles[bubbles.length - 1].getAttribute('data-id'), 10) || 0;
+  }
+  var lastId = getLastId();
+
+  function escapeHtml(s) {
+    var div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  function appendMessage(m) {
+    var mine = m.sender_is_admin === isAdminView;
+    var bubble = document.createElement('div');
+    bubble.className = 'chat-bubble ' + (mine ? 'mine' : 'theirs');
+    bubble.setAttribute('data-id', m.id);
+    var html = '';
+    if (m.text) html += escapeHtml(m.text);
+    if (m.image_url) html += '<img src="' + m.image_url + '" alt="Изображение в чате">';
+    html += '<div class="chat-time">' + m.created_at + '</div>';
+    bubble.innerHTML = html;
+    var empty = win.querySelector('.chat-empty');
+    if (empty) empty.remove();
+    win.appendChild(bubble);
+  }
+
+  function poll() {
+    fetch(pollUrl + '?after_id=' + lastId)
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data.ok && data.messages && data.messages.length) {
+          var nearBottom = win.scrollHeight - win.scrollTop - win.clientHeight < 120;
+          data.messages.forEach(function (m) {
+            appendMessage(m);
+            lastId = m.id;
+          });
+          if (nearBottom) win.scrollTop = win.scrollHeight;
+        }
+      })
+      .catch(function () { /* тихо игнорируем сбой сети */ });
+  }
+
+  setInterval(poll, 3000);
+})();
+</script>
+{% endblock %}
+{% endblock %}

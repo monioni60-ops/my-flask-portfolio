@@ -68,22 +68,20 @@
       <div class="comment-list">
         {% for c in comments %}
         <div class="comment-item">
-          <div class="comment-item-head">
-            <div class="comment-author">
-              <span class="avatar">{{ c.author.username[0]|upper }}</span>
-              {{ c.author.username }}
-            </div>
-            <div style="display:flex; align-items:center; gap:12px;">
+          <div class="avatar">{{ c.author.username[0]|upper }}</div>
+          <div class="comment-body">
+            <div class="comment-item-head">
+              <span class="comment-author">{{ c.author.username }}</span>
               <span class="comment-date">{{ c.date.strftime('%d.%m.%Y %H:%M') }}</span>
-              {% if current_user.is_authenticated and current_user.is_admin %}
-              <form method="post" action="{{ url_for('admin_delete_comment', comment_id=c.id) }}">
-                <input type="hidden" name="next" value="{{ url_for('work_detail', work_id=work.id) }}">
-                <button type="submit" class="comment-admin-del">Удалить</button>
-              </form>
-              {% endif %}
             </div>
+            <div class="comment-text">{{ c.text }}</div>
+            {% if current_user.is_authenticated and current_user.is_admin %}
+            <form method="post" action="{{ url_for('admin_delete_comment', comment_id=c.id) }}" style="margin-top:6px;">
+              <input type="hidden" name="next" value="{{ url_for('work_detail', work_id=work.id) }}">
+              <button type="submit" class="comment-admin-del">Удалить</button>
+            </form>
+            {% endif %}
           </div>
-          <div class="comment-text">{{ c.text }}</div>
         </div>
         {% else %}
         <p class="empty-note">Комментариев пока нет. Будьте первым!</p>

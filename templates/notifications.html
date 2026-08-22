@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Уведомления — ONNI_MONNI{% endblock %}
+{% block content %}
+<section class="list-page">
+  <h1>Уведомления</h1>
+  <p class="sub">Здесь появляются системные сообщения — например, когда ваше обращение в поддержку одобрено.</p>
+
+  {% for n in items %}
+  <div class="notif-item">
+    <span class="dot"></span>
+    <div>
+      <div class="notif-text">{{ n.text }}</div>
+      <div class="notif-date">{{ n.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+    </div>
+  </div>
+  {% else %}
+  <p class="empty-note">Уведомлений пока нет.</p>
+  {% endfor %}
+</section>
+{% endblock %}
